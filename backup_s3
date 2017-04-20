@@ -1,0 +1,25 @@
+#!/bin/sh
+DIRS[0]='/home/morris/var/pictures/'
+DIRS[1]='/home/morris/docs/'
+target='s3_secret'
+synccmd='rclone copy --syslog --transfers 20 '
+
+k='\e[0m'
+r='\e[0;31m'
+g='\e[0;32m'
+b='\e[0;34m'
+PRG="${b}[BACKUP_S3]${k}"
+
+# Test internet connection
+if ping -q -w 1 -c 1 8.8.8.8 > /dev/null; then
+	echo -e "${PRG} ${g}Have internet connection.${k}"
+else
+	echo -e "${PRG} ${r}Do not internet connection.${k}"
+	exit
+fi
+
+for dir in "${DIRS[@]}"; do
+	bn=$(basename $dir)
+	echo -e "${PRG} ${g}Uploading ${bn}${k}"
+	eval "${synccmd} ${dir} ${target}:${bn}"
+done

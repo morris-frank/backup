@@ -1,0 +1,9 @@
+[Unit]
+Description=backup of %i
+
+[Service]
+Type=oneshot
+ExecStart=/home/morris/bin/%i
+
+[Install]
+WantedBy=multi-user.target

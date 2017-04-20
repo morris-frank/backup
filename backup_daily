@@ -1,0 +1,28 @@
+#!/bin/sh
+targethost='uber'
+targetdir='/home/mrtukkin/backup/'
+secpath='/home/morris/var/secret/'
+dstr=$(date '+%F')
+
+k='\e[0m'
+r='\e[0;31m'
+g='\e[0;32m'
+b='\e[0;34m'
+PRG="${b}[BACKUP_DAILY]${k}"
+
+# Test internet connection
+if ping -q -w 1 -c 1 8.8.8.8 > /dev/null; then
+	echo -e "${PRG} ${g}Have internet connection.${k}"
+else
+	echo -e "${PRG} ${r}Do not internet connection.${k}"
+	exit 1
+fi
+
+for f in ${secpath}*; do
+	bn=$(basename $f)
+	echo -e "${PRG} ${g}Upload ${bn}${k}"
+	nf="${targethost}:${targetdir}${bn}/${dstr}_${bn}"
+	ssh -q ${targethost} "mkdir -p ${targetdir}${bn}/"
+	scp -q $f $nf
+done
+exit 0

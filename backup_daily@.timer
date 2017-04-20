@@ -1,0 +1,10 @@
+[Unit]
+Description=Run backup script %i daily
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+Unit=start_backup@%i.serivce
+
+[Install]
+WantedBy=timers.target
